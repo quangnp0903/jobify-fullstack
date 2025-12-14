@@ -171,8 +171,8 @@ ul {
   display: block;
   object-fit: cover;
 }
-/* buttons */
 
+/* buttons */
 .btn {
   cursor: pointer;
   color: var(--white);
