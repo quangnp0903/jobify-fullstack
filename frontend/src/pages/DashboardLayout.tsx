@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { BigSidebar, SmallSidebar, Navbar } from '../components';
+import { checkDefaultTheme } from '../App';
 
 type User = { name: string; avatar?: string };
 
@@ -28,7 +29,7 @@ const DashboardLayout: React.FC = () => {
   const user: User = { name: 'Zippy', avatar: '' };
 
   const [showSidebar, setShowSidebar] = useState(false);
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
 
   const toggleDarkTheme = () => {
     const newDarkTheme = !isDarkTheme;
