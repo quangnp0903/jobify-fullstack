@@ -14,7 +14,7 @@ const LogoutContainer: React.FC = () => {
   return (
     <Wrapper>
       <button onClick={toggleDropdown} className="btn logout-btn">
-        {user.avatar ? (
+        {user?.avatar ? (
           <img src={user.avatar} alt="avatar" className="img" />
         ) : (
           <FaUserCircle />

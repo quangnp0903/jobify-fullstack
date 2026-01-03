@@ -11,13 +11,13 @@ const ThemeToggle: React.FC = () => {
       {isDarkTheme ? (
         <BsFillSunFill className="toggle-icon" />
       ) : (
-        <BsFillMoonFill className="toggle-icon" />
+        <BsFillMoonFill />
       )}
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.button`
   background: transparent;
   border-color: transparent;
   width: 3.5rem;

@@ -1,31 +1,28 @@
-const FormRow: React.FC<{
+const FormRowSelect: React.FC<{
   name: string;
-  type: string;
   defaultValue?: string;
   isRequired?: boolean;
   labelText?: string;
-}> = ({
-  name,
-  type = 'text',
-  defaultValue,
-  isRequired = true,
-  labelText = name,
-}) => {
+  list: string[];
+}> = ({ name, defaultValue, isRequired = true, labelText = name, list }) => {
   return (
     <div className="form-row">
       <label htmlFor={name} className="form-label">
         {labelText}
       </label>
-      <input
-        type={type}
+      <select
         id={name}
         name={name}
-        className="form-input"
+        className="form-select"
         defaultValue={defaultValue}
         required={isRequired}
-      />
+      >
+        {list.map((item) => (
+          <option key={item}>{item}</option>
+        ))}
+      </select>
     </div>
   );
 };
 
-export default FormRow;
+export default FormRowSelect;

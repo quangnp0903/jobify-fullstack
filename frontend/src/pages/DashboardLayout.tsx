@@ -1,11 +1,12 @@
 import { createContext, useContext, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { BigSidebar, SmallSidebar, Navbar } from '../components';
 import { checkDefaultTheme } from '../App';
-
-type User = { name: string; avatar?: string };
+import type { User } from '../models/User';
+import customFetch from '../utils/customFetch';
+import { toast } from 'react-toastify';
 
 type DashboardCtxObj = {
   user: User;
@@ -16,8 +17,33 @@ type DashboardCtxObj = {
   logoutUser: () => void;
 };
 
+type DashboardLoaderData = {
+  user: User;
+};
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const loader = async (): Promise<DashboardLoaderData> => {
+  try {
+    const { data } = await customFetch.get<DashboardLoaderData>(
+      '/users/current-user'
+    );
+
+    return data;
+  } catch (error) {
+    throw redirect('/');
+  }
+};
+
 const DashboardContext = createContext<DashboardCtxObj>({
-  user: { name: '', avatar: '' },
+  user: {
+    _id: '',
+    name: '',
+    email: '',
+    lastName: '',
+    location: '',
+    role: '',
+    avatar: '',
+  },
   showSidebar: false,
   isDarkTheme: false,
   toggleDarkTheme: () => {},
@@ -26,7 +52,8 @@ const DashboardContext = createContext<DashboardCtxObj>({
 });
 
 const DashboardLayout: React.FC = () => {
-  const user: User = { name: 'Zippy', avatar: '' };
+  const { user } = useLoaderData<typeof loader>();
+  const navigate = useNavigate();
 
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
@@ -38,12 +65,19 @@ const DashboardLayout: React.FC = () => {
     document.body.classList.toggle('dark-theme', newDarkTheme);
     localStorage.setItem('darkTheme', newDarkTheme.toString());
   };
+
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
-  const logoutUser = () => {
-    console.log('Logout User');
+
+  const logoutUser = async () => {
+    navigate('/');
+    await customFetch.get('/auth/logout');
+    toast.success('Logging out...');
   };
+
+  console.log('current user', user);
+
   return (
     <DashboardContext.Provider
       value={{
@@ -62,7 +96,7 @@ const DashboardLayout: React.FC = () => {
           <div>
             <Navbar />
             <div className="dashboard-page">
-              <Outlet />
+              <Outlet context={{ user }} />
             </div>
           </div>
         </main>

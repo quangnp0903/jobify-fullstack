@@ -4,6 +4,7 @@ import {
   type ActionFunctionArgs,
   redirect,
   useNavigation,
+  useActionData,
 } from 'react-router-dom';
 
 import Wrapper from '../assets/wrappers/RegisterAndLoginPage';
@@ -13,9 +14,15 @@ import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
 import type { ApiError } from '../models/Error';
 
+type LoginSubmit = {
+  email: string;
+  password: string;
+};
+
 const Login: React.FC = () => {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
+  const errors = useActionData<{ msg?: string }>();
 
   return (
     <Wrapper>
@@ -24,6 +31,7 @@ const Login: React.FC = () => {
         <h4>Login</h4>
         <FormRow name="email" type="email" />
         <FormRow name="password" type="password" />
+        {errors && <p style={{ color: 'red' }}>{errors.msg}</p>}
         <button type="submit" className="btn btn-block" disabled={isSubmitting}>
           {isSubmitting ? 'submitting...' : 'submit'}
         </button>
@@ -44,7 +52,13 @@ const Login: React.FC = () => {
 // eslint-disable-next-line react-refresh/only-export-components
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  const data = Object.fromEntries(formData);
+  const data = Object.fromEntries(formData) as LoginSubmit;
+  const errors = { msg: '' } as { msg?: string };
+
+  if (data.password.length < 3) {
+    errors.msg = 'password too short';
+    return errors;
+  }
 
   try {
     await customFetch.post('/auth/login', data);
@@ -54,8 +68,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   } catch (error) {
     const apiErr = error as ApiError;
 
-    toast.error(apiErr?.response?.data?.msg);
-    return apiErr;
+    // toast.error(apiErr?.response?.data?.msg);
+    errors.msg = apiErr?.response?.data?.msg;
+    return errors;
   }
 };
 
