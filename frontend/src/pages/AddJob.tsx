@@ -1,25 +1,20 @@
 import {
   Form,
+  redirect,
   useNavigation,
   useOutletContext,
   type ActionFunctionArgs,
 } from 'react-router-dom';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 
 import { FormRow, FormRowSelect } from '../components';
 import { JOB_STATUS, JOB_TYPE } from '../utils/constants';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
-import type { ApiError } from '../models/Error';
 import type { User } from '../models/User';
-
-type AddJobSubmit = {
-  company: string;
-  position: string;
-  jobType: string;
-  jobLocation: string;
-  jobStatus: string;
-};
+import type { JobSubmitData } from '../models/Job';
+import { handleApiErr } from '../utils/common';
+import Wrapper from '../assets/wrappers/DashboardForm';
 
 type DashboardOutletContext = {
   user: User;
@@ -62,62 +57,18 @@ const AddJob: React.FC = () => {
   );
 };
 
-const Wrapper = styled.section`
-  background: var(--background-secondary-color);
-  padding: 3rem 2rem 2rem 2rem;
-
-  form {
-    display: block;
-    max-width: unset;
-    width: unset;
-    padding: 0;
-    background: unset;
-    border-radius: unset;
-    box-shadow: unset;
-    margin: 2rem auto;
-  }
-
-  .btn-block {
-    margin-top: 1rem;
-    padding: 0.62rem 0.75rem;
-  }
-
-  @media screen and (min-width: 992px) {
-    padding-bottom: 1rem;
-
-    form {
-      display: grid;
-      column-gap: 1rem;
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .btn-block {
-      align-self: center;
-    }
-  }
-
-  @media screen and (min-width: 1120px) {
-    form {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-  }
-`;
-
 // eslint-disable-next-line react-refresh/only-export-components
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  const data = Object.fromEntries(formData) as AddJobSubmit;
+  const data = Object.fromEntries(formData) as JobSubmitData;
 
   try {
     await customFetch.post('/jobs', data);
 
     toast.success('Job added successfully');
-    return null;
+    return redirect('all-jobs');
   } catch (error) {
-    const apiErr = error as ApiError;
-
-    toast.error(apiErr?.response?.data?.msg);
-    return apiErr;
+    handleApiErr(error);
   }
 };
 

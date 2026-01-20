@@ -28,6 +28,7 @@ const Wrapper = styled.aside`
   @media screen and (min-width: 992px) {
     display: block;
     box-shadow: 1px 0 0 0 rgba(0, 0, 0, 0.1);
+
     .sidebar-container {
       width: 250px;
       background: var(--background-secondary-color);
@@ -81,6 +82,10 @@ const Wrapper = styled.aside`
       display: grid;
       font-size: 1.5rem;
       margin-right: 1rem;
+    }
+
+    .pending {
+      background: var(--background-color);
     }
   }
 `;

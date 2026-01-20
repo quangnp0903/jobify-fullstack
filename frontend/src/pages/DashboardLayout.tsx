@@ -76,8 +76,6 @@ const DashboardLayout: React.FC = () => {
     toast.success('Logging out...');
   };
 
-  console.log('current user', user);
-
   return (
     <DashboardContext.Provider
       value={{

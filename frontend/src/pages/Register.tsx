@@ -11,6 +11,7 @@ import Wrapper from '../assets/wrappers/RegisterAndLoginPage';
 import { Logo, FormRow } from '../components';
 import customFetch from '../utils/customFetch';
 import { type ApiError } from '../models/Error';
+import { handleApiErr } from '../utils/common';
 
 const Register: React.FC = () => {
   const navigation = useNavigation();
@@ -51,11 +52,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     toast.success('Register successfully');
     return redirect('/login');
   } catch (error) {
-    // console.log('error', error);
-    const apiErr = error as ApiError;
-
-    toast.error(apiErr?.response?.data?.msg);
-    return apiErr;
+    handleApiErr(error);
   }
 };
 
