@@ -12,6 +12,7 @@ import {
   AllJobs,
   Profile,
   EditJob,
+  Admin,
 } from './pages';
 import { action as registerAction } from './pages/Register';
 import { action as loginAction } from './pages/Login';
@@ -22,7 +23,9 @@ import {
   loader as editJobLoader,
   action as editJobAction,
 } from './pages/EditJob';
-import { action as deleteJob } from './pages/DeleteJob';
+import { action as deleteJobAction } from './pages/DeleteJob';
+import { loader as adminLoader } from './pages/Admin';
+import AdminError from './pages/AdminError';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const checkDefaultTheme = () => {
@@ -70,7 +73,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'delete-job/:jobId',
-            action: deleteJob,
+            action: deleteJobAction,
           },
           {
             path: 'stats',
@@ -87,7 +90,9 @@ const router = createBrowserRouter([
           },
           {
             path: 'admin',
-            element: <Stats />,
+            element: <Admin />,
+            loader: adminLoader,
+            errorElement: <AdminError />,
           },
         ],
       },

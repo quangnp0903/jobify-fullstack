@@ -63,7 +63,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const data = Object.fromEntries(formData) as JobSubmitData;
 
   try {
-    await customFetch.post('/jobs', data);
+    await customFetch.post('/jobss', data);
 
     toast.success('Job added successfully');
     return redirect('all-jobs');
