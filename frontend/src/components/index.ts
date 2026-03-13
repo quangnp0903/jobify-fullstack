@@ -9,5 +9,4 @@ export { default as FormRowSelect } from './FormRowSelect';
 export { default as JobsContainer } from './JobsContainer';
 export { default as SearchContainer } from './SearchContainer';
 export { default as JobItem } from './JobItem';
-export { default as StatItem_Temp } from './StatItem_Temp';
 export { default as StatItem } from './StatItem';

@@ -6,13 +6,27 @@ import 'express-async-errors';
 import { body, validationResult } from 'express-validator';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import cloudinary from 'cloudinary';
 
+// public
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+// router
 import jobRouter from './routers/jobRouter.js';
 import authRouter from './routers/authRouter.js';
 import userRouter from './routers/userRouter.js';
+
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 import { authenticateUser } from './middleware/authMiddleware.js';
 import { corsOptions } from './config/corsOptions.js';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
 
 dotenv.config();
 
@@ -23,9 +37,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+app.use(express.static(path.resolve(__dirname, './public')));
 
 app.post(
   '/api/v1/test',

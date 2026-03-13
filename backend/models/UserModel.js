@@ -22,12 +22,14 @@ const UserSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: 'User',
     },
+    avatar: String,
+    avatarPublicId: String,
   },
   { timestamps: true }
 );
 
 UserSchema.methods.toJSON = function () {
-  console.log('this', this);
+  // console.log('this', this);
   const obj = this.toObject();
   delete obj.password;
   return obj;

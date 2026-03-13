@@ -3,7 +3,6 @@ import {
   Form,
   type ActionFunctionArgs,
   redirect,
-  useNavigation,
   useActionData,
 } from 'react-router-dom';
 
@@ -13,6 +12,7 @@ import FormRow from '../components/FormRow';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
 import type { ApiError } from '../models/Error';
+import SubmitBtn from '../components/SubmitBtn';
 
 type LoginSubmit = {
   email: string;
@@ -20,8 +20,6 @@ type LoginSubmit = {
 };
 
 const Login: React.FC = () => {
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === 'submitting';
   const errors = useActionData<{ msg?: string }>();
 
   return (
@@ -32,9 +30,7 @@ const Login: React.FC = () => {
         <FormRow name="email" type="email" />
         <FormRow name="password" type="password" />
         {errors && <p style={{ color: 'red' }}>{errors.msg}</p>}
-        <button type="submit" className="btn btn-block" disabled={isSubmitting}>
-          {isSubmitting ? 'submitting...' : 'submit'}
-        </button>
+        <SubmitBtn formBtn />
         <button type="button" className="btn btn-block">
           explore the app
         </button>

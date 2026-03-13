@@ -2,7 +2,6 @@ import {
   Form,
   redirect,
   useLoaderData,
-  useNavigation,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from 'react-router-dom';
@@ -14,14 +13,12 @@ import customFetch from '../utils/customFetch';
 import Wrapper from '../assets/wrappers/DashboardForm';
 import { FormRow, FormRowSelect } from '../components';
 import { JOB_STATUS, JOB_TYPE } from '../utils/constants';
+import SubmitBtn from '../components/SubmitBtn';
 
 const EditJob: React.FC = () => {
-  const navigation = useNavigation();
   const { job } = useLoaderData<{ job: Job }>();
 
-  const isSubmitting = navigation.state === 'submitting';
   // console.log({ job });
-
   return (
     <Wrapper>
       <h4>add job</h4>
@@ -46,9 +43,7 @@ const EditJob: React.FC = () => {
           defaultValue={job.jobType}
           list={Object.values(JOB_TYPE)}
         />
-        <button type="submit" className="btn btn-block" disabled={isSubmitting}>
-          {isSubmitting ? 'submitting' : 'submit'}
-        </button>
+        <SubmitBtn formBtn />
       </Form>
     </Wrapper>
   );

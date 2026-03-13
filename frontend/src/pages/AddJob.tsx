@@ -1,7 +1,6 @@
 import {
   Form,
   redirect,
-  useNavigation,
   useOutletContext,
   type ActionFunctionArgs,
 } from 'react-router-dom';
@@ -15,6 +14,7 @@ import type { User } from '../models/User';
 import type { JobSubmitData } from '../models/Job';
 import { handleApiErr } from '../utils/common';
 import Wrapper from '../assets/wrappers/DashboardForm';
+import SubmitBtn from '../components/SubmitBtn';
 
 type DashboardOutletContext = {
   user: User;
@@ -22,8 +22,6 @@ type DashboardOutletContext = {
 
 const AddJob: React.FC = () => {
   const { user } = useOutletContext<DashboardOutletContext>();
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === 'submitting';
 
   return (
     <Wrapper>
@@ -49,9 +47,7 @@ const AddJob: React.FC = () => {
           defaultValue={JOB_TYPE.FULL_TIME}
           list={Object.values(JOB_TYPE)}
         />
-        <button type="submit" className="btn btn-block" disabled={isSubmitting}>
-          {isSubmitting ? 'submitting' : 'submit'}
-        </button>
+        <SubmitBtn formBtn />
       </Form>
     </Wrapper>
   );
@@ -63,7 +59,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const data = Object.fromEntries(formData) as JobSubmitData;
 
   try {
-    await customFetch.post('/jobss', data);
+    await customFetch.post('/jobs', data);
 
     toast.success('Job added successfully');
     return redirect('all-jobs');
