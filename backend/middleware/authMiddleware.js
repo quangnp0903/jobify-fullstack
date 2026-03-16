@@ -1,6 +1,7 @@
 import {
   UnauthenticatedError,
   UnauthorizedError,
+  BadRequestError,
 } from '../errors/customErrors.js';
 import { verifyJWT } from '../utils/tokenUtils.js';
 
@@ -13,6 +14,7 @@ export const authenticateUser = async (req, res, next) => {
 
   try {
     const { userId, role } = verifyJWT(token);
+    const testUser = userId === 'testUserId';
     req.user = { userId, role };
     next();
   } catch (error) {
@@ -27,4 +29,11 @@ export const authorizePermissions = (...roles) => {
     }
     next();
   };
+};
+
+export const checkForTestUser = (req, res, next) => {
+  if (req.user.testUser) {
+    throw new BadRequestError('Demo User. Read Only!');
+  }
+  next();
 };

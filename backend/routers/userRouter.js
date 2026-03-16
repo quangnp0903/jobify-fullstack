@@ -10,7 +10,10 @@ import {
   getApplicationStats,
   updateUser,
 } from '../controllers/userController.js';
-import { authorizePermissions } from '../middleware/authMiddleware.js';
+import {
+  authorizePermissions,
+  checkForTestUser,
+} from '../middleware/authMiddleware.js';
 
 router.get('/current-user', getCurrentUser);
 router.get(
@@ -20,6 +23,7 @@ router.get(
 );
 router.patch(
   '/update-user',
+  checkForTestUser,
   upload.single('avatar'),
   validateUpdateUserInput,
   updateUser

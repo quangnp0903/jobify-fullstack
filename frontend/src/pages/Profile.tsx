@@ -23,7 +23,7 @@ const Profile: React.FC = () => {
   return (
     <Wrapper>
       <h4>Profile</h4>
-      <Form method="post" className="form">
+      <Form method="post" className="form" encType="multipart/form-data">
         <div className="form-row">
           <label htmlFor="avatar" className="form-label">
             Select an image file (max 0.5 MB)
@@ -38,16 +38,16 @@ const Profile: React.FC = () => {
         </div>
         <FormRow name="name" type="text" defaultValue={user.name} />
         <FormRow
-          name="lastname"
+          name="lastName"
           type="text"
           labelText="last name"
           defaultValue={user.lastName}
         />
         <FormRow name="email" type="text" defaultValue={user.email} />
         <FormRow
-          name="jobLocation"
+          name="location"
           type="text"
-          labelText="Location"
+          labelText="location"
           defaultValue={user.location}
         />
         <SubmitBtn formBtn />
@@ -67,7 +67,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   try {
-    await customFetch.post('/users/update-user', formData);
+    await customFetch.patch('/users/update-user', formData);
 
     toast.success('Profile updated successfully');
   } catch (error) {

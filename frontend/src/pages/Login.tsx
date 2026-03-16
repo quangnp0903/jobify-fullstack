@@ -4,6 +4,7 @@ import {
   type ActionFunctionArgs,
   redirect,
   useActionData,
+  useNavigate,
 } from 'react-router-dom';
 
 import Wrapper from '../assets/wrappers/RegisterAndLoginPage';
@@ -11,8 +12,8 @@ import Logo from '../components/Logo';
 import FormRow from '../components/FormRow';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
-import type { ApiError } from '../models/Error';
 import SubmitBtn from '../components/SubmitBtn';
+import type { ApiError } from '../models/Error';
 
 type LoginSubmit = {
   email: string;
@@ -20,18 +21,34 @@ type LoginSubmit = {
 };
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
   const errors = useActionData<{ msg?: string }>();
+
+  const loginDemoUser = async () => {
+    const data = { email: 'test@test.com', password: 'secret123' };
+
+    try {
+      await customFetch.post('/auth/login', data);
+      toast.success('take a test drive');
+
+      navigate('/dashboard');
+    } catch (error) {
+      const apiErr = error as ApiError;
+
+      toast.error(apiErr?.response?.data?.msg);
+    }
+  };
 
   return (
     <Wrapper>
       <Form method="post" className="form">
         <Logo />
         <h4>Login</h4>
-        <FormRow name="email" type="email" />
+        <FormRow name="email" type="email" autoFocus />
         <FormRow name="password" type="password" />
         {errors && <p style={{ color: 'red' }}>{errors.msg}</p>}
         <SubmitBtn formBtn />
-        <button type="button" className="btn btn-block">
+        <button type="button" className="btn btn-block" onClick={loginDemoUser}>
           explore the app
         </button>
         <p>
@@ -59,7 +76,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     await customFetch.post('/auth/login', data);
 
-    toast.success('Login successfully');
+    // toast.success('Login successfully');
     return redirect('/dashboard');
   } catch (error) {
     const apiErr = error as ApiError;

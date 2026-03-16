@@ -22,13 +22,13 @@ import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 import { authenticateUser } from './middleware/authMiddleware.js';
 import { corsOptions } from './config/corsOptions.js';
 
+dotenv.config();
+
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
   api_secret: process.env.CLOUD_API_SECRET,
 });
-
-dotenv.config();
 
 const app = express();
 
