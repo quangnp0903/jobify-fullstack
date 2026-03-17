@@ -20,3 +20,14 @@ export type JobSubmitData = {
   jobLocation: string;
   jobStatus: string;
 };
+
+export type StatsData = {
+  declined: number;
+  interview: number;
+  pending: number;
+};
+
+export type MonthlyApp = {
+  date: string;
+  count: number;
+};

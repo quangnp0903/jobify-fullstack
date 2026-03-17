@@ -1,4 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
+import mongoose from 'mongoose';
+import day from 'dayjs';
 // import { nanoid } from 'nanoid';
 
 import Job from '../models/JobModel.js';
@@ -53,6 +55,7 @@ export const deleteJob = async (req, res) => {
 };
 
 export const showStats = async (req, res) => {
+  console.log('req.user.userId', req.user.userId);
   let stats = await Job.aggregate([
     { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
     { $group: { _id: '$jobStatus', count: { $sum: 1 } } },

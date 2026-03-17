@@ -4,10 +4,10 @@ import {
   type ActionFunctionArgs,
 } from 'react-router-dom';
 // import styled from 'styled-components';
+import { toast } from 'react-toastify';
 
 import { FormRow } from '../components';
 import customFetch from '../utils/customFetch';
-import { toast } from 'react-toastify';
 import type { User } from '../models/User';
 import { handleApiErr } from '../utils/common';
 import Wrapper from '../assets/wrappers/DashboardForm';

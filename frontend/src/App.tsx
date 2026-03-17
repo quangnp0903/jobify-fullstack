@@ -26,6 +26,7 @@ import {
 import { action as deleteJobAction } from './pages/DeleteJob';
 import { loader as adminLoader } from './pages/Admin';
 import { action as profileAction } from './pages/Profile';
+import { loader as statsLoader } from './pages/Stats';
 import AdminError from './pages/AdminError';
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
           {
             path: 'stats',
             element: <Stats />,
+            loader: statsLoader,
           },
           {
             path: 'all-jobs',
