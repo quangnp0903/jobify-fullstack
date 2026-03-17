@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 type WrapperProps = {
   color: string;
-  bgc: string;
+  $bgc: string;
 };
 
 const StatItem: React.FC<{
@@ -14,7 +14,7 @@ const StatItem: React.FC<{
   bgc: string;
 }> = ({ quantity, icon, color, title, bgc }) => {
   return (
-    <Wrapper color={color} bgc={bgc}>
+    <Wrapper color={color} $bgc={bgc}>
       <header className="top-content">
         <span className="quantity">{quantity}</span>
         <span className="icon">{icon}</span>
@@ -49,7 +49,7 @@ const Wrapper = styled.article<WrapperProps>`
       align-items: center;
       justify-content: center;
       font-size: 2rem;
-      background: ${(props) => props.bgc};
+      background: ${(props) => props.$bgc};
       border-radius: var(--border-radius);
     }
   }

@@ -5,8 +5,6 @@ import JobItem from './JobItem';
 const JobsContainer: React.FC = () => {
   const { jobs } = useAllJobContext();
 
-  console.log({ jobs });
-
   if (jobs.length === 0) {
     return (
       <Wrapper>
