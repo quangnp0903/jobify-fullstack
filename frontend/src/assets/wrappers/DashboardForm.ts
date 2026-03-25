@@ -20,6 +20,13 @@ const Wrapper = styled.section`
     padding: 0.62rem 0.75rem;
   }
 
+  .form-btn {
+    display: grid;
+    place-items: center;
+    margin-top: 1.1rem;
+    align-self: center;
+  }
+
   @media screen and (min-width: 992px) {
     padding-bottom: 1rem;
 

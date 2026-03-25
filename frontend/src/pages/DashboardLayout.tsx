@@ -6,7 +6,6 @@ import { BigSidebar, SmallSidebar, Navbar } from '../components';
 import { checkDefaultTheme } from '../App';
 import type { User } from '../models/User';
 import customFetch from '../utils/customFetch';
-import { toast } from 'react-toastify';
 
 type DashboardCtxObj = {
   user: User;

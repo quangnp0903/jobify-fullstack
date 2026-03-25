@@ -1,17 +1,21 @@
 const FormRow: React.FC<{
   name: string;
   type: string;
+  value?: string;
   defaultValue?: string;
   isRequired?: boolean;
   labelText?: string;
   autoFocus?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }> = ({
   name,
   type = 'text',
   defaultValue,
+  value,
   isRequired = true,
   labelText = name,
   autoFocus = false,
+  onChange,
 }) => {
   return (
     <div className="form-row">
@@ -26,6 +30,8 @@ const FormRow: React.FC<{
         defaultValue={defaultValue}
         required={isRequired}
         autoFocus={autoFocus}
+        onChange={onChange}
+        value={value}
       />
     </div>
   );

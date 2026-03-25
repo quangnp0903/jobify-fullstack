@@ -3,7 +3,7 @@ import { useAllJobContext } from '../pages/AllJobs';
 import JobItem from './JobItem';
 
 const JobsContainer: React.FC = () => {
-  const { jobs } = useAllJobContext();
+  const { jobs, totalJobs } = useAllJobContext();
 
   if (jobs.length === 0) {
     return (
@@ -15,7 +15,9 @@ const JobsContainer: React.FC = () => {
 
   return (
     <Wrapper>
-      <h5>99 jobs found</h5>
+      <h5>
+        {totalJobs} {`job${totalJobs > 1 ? 's' : ''} found`}
+      </h5>
       <div className="jobs">
         {jobs.map((job) => (
           <JobItem key={job._id} {...job} />

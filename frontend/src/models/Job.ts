@@ -31,3 +31,10 @@ export type MonthlyApp = {
   date: string;
   count: number;
 };
+
+export type SearchJobData = {
+  search: string;
+  jobStatus: string;
+  jobType: string;
+  sort: string;
+};
