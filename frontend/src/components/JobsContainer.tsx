@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useAllJobContext } from '../pages/AllJobs';
 import JobItem from './JobItem';
+import PagingContainer from './PagingContainer';
 
 const JobsContainer: React.FC = () => {
   const { jobs, totalJobs } = useAllJobContext();
@@ -23,6 +24,7 @@ const JobsContainer: React.FC = () => {
           <JobItem key={job._id} {...job} />
         ))}
       </div>
+      <PagingContainer />
     </Wrapper>
   );
 };

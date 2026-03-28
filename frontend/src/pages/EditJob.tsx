@@ -21,7 +21,7 @@ const EditJob: React.FC = () => {
   // console.log({ job });
   return (
     <Wrapper>
-      <h4>add job</h4>
+      <h4>update job</h4>
       <Form method="post" className="form">
         <FormRow name="position" type="text" defaultValue={job.position} />
         <FormRow name="company" type="text" defaultValue={job.company} />

@@ -35,6 +35,7 @@ const Wrapper = styled.aside`
       min-height: 100vh;
       margin-left: -250px;
       transition: margin-left 0.3s ease-in-out;
+      height: 100%;
     }
 
     .show-sidebar {
@@ -44,7 +45,7 @@ const Wrapper = styled.aside`
     .content {
       position: sticky;
       padding-left: 2.5rem;
-      top: 0;
+      top: 0px;
     }
 
     header {
