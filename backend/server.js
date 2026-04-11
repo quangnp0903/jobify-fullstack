@@ -7,6 +7,8 @@ import { body, validationResult } from 'express-validator';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import cloudinary from 'cloudinary';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
 
 // public
 import { dirname } from 'path';
@@ -35,6 +37,8 @@ const app = express();
 app.use(express.json());
 // app.use(morgan('dev'));
 app.use(cookieParser());
+app.use(helmet());
+app.use(mongoSanitize());
 app.use(cors(corsOptions));
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

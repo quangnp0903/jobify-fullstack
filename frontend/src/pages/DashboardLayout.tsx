@@ -1,4 +1,10 @@
-import { createContext, useContext, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { Outlet, redirect, useNavigate, useNavigation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useQuery, type QueryClient } from '@tanstack/react-query';
@@ -71,6 +77,7 @@ const DashboardLayout: React.FC<{ queryClient: QueryClient }> = ({
   const isPageLoading = navigation.state === 'loading';
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
+  const [isAuthError, setIsAuthError] = useState(false);
 
   const toggleDarkTheme = () => {
     const newDarkTheme = !isDarkTheme;
@@ -84,12 +91,29 @@ const DashboardLayout: React.FC<{ queryClient: QueryClient }> = ({
     setShowSidebar(!showSidebar);
   };
 
-  const logoutUser = async () => {
+  const logoutUser = useCallback(async () => {
     navigate('/');
     await customFetch.get('/auth/logout');
     queryClient.invalidateQueries();
     // toast.success('Logging out...');
-  };
+  }, [navigate, queryClient]);
+
+  customFetch.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error?.response?.status === 401) {
+        setIsAuthError(true);
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  useEffect(() => {
+    if (!isAuthError) return;
+    logoutUser();
+  }, [isAuthError, logoutUser]);
 
   return (
     <DashboardContext.Provider
