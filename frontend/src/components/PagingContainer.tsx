@@ -3,7 +3,8 @@ import { useAllJobContext } from '../pages/AllJobs';
 import { useSearchParams } from 'react-router-dom';
 
 const PagingContainer: React.FC = () => {
-  const { currentPage, numOfPages } = useAllJobContext();
+  const { data } = useAllJobContext();
+  const { currentPage, numOfPages } = data;
   const [searchParams, setSearchParams] = useSearchParams();
 
   if (numOfPages === 1) {

@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 // import styled from 'styled-components';
 import { toast } from 'react-toastify';
+import type { QueryClient } from '@tanstack/react-query';
 
 import { FormRow } from '../components';
 import customFetch from '../utils/customFetch';
@@ -57,24 +58,27 @@ const Profile: React.FC = () => {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const formData = await request.formData();
-  const file = formData.get('avatar') as File;
+export const action =
+  (queryClient: QueryClient) =>
+  async ({ request }: ActionFunctionArgs) => {
+    const formData = await request.formData();
+    const file = formData.get('avatar') as File;
 
-  if (file?.size > 500000) {
-    toast.error('Image size too large');
+    if (file?.size > 500000) {
+      toast.error('Image size too large');
+      return null;
+    }
+
+    try {
+      await customFetch.patch('/users/update-user', formData);
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+
+      toast.success('Profile updated successfully');
+    } catch (error) {
+      handleApiErr(error);
+    }
+
     return null;
-  }
-
-  try {
-    await customFetch.patch('/users/update-user', formData);
-
-    toast.success('Profile updated successfully');
-  } catch (error) {
-    handleApiErr(error);
-  }
-
-  return null;
-};
+  };
 
 export default Profile;

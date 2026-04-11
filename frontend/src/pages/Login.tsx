@@ -6,6 +6,7 @@ import {
   useActionData,
   useNavigate,
 } from 'react-router-dom';
+import type { QueryClient } from '@tanstack/react-query';
 
 import Wrapper from '../assets/wrappers/RegisterAndLoginPage';
 import Logo from '../components/Logo';
@@ -63,28 +64,31 @@ const Login: React.FC = () => {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const formData = await request.formData();
-  const data = Object.fromEntries(formData) as LoginSubmit;
-  const errors = { msg: '' } as { msg?: string };
+export const action =
+  (queryClient: QueryClient) =>
+  async ({ request }: ActionFunctionArgs) => {
+    const formData = await request.formData();
+    const data = Object.fromEntries(formData) as LoginSubmit;
+    const errors = { msg: '' } as { msg?: string };
 
-  if (data.password.length < 3) {
-    errors.msg = 'password too short';
-    return errors;
-  }
+    if (data.password.length < 3) {
+      errors.msg = 'password too short';
+      return errors;
+    }
 
-  try {
-    await customFetch.post('/auth/login', data);
+    try {
+      await customFetch.post('/auth/login', data);
+      queryClient.invalidateQueries();
 
-    // toast.success('Login successfully');
-    return redirect('/dashboard');
-  } catch (error) {
-    const apiErr = error as ApiError;
+      // toast.success('Login successfully');
+      return redirect('/dashboard');
+    } catch (error) {
+      const apiErr = error as ApiError;
 
-    // toast.error(apiErr?.response?.data?.msg);
-    errors.msg = apiErr?.response?.data?.msg;
-    return errors;
-  }
-};
+      // toast.error(apiErr?.response?.data?.msg);
+      errors.msg = apiErr?.response?.data?.msg;
+      return errors;
+    }
+  };
 
 export default Login;

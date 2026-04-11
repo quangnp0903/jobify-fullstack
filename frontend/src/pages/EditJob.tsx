@@ -6,6 +6,7 @@ import {
   type LoaderFunctionArgs,
 } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useQuery, type QueryClient } from '@tanstack/react-query';
 
 import type { Job, JobSubmitData } from '../models/Job';
 import { handleApiErr } from '../utils/common';
@@ -15,8 +16,21 @@ import { FormRow, FormRowSelect } from '../components';
 import { JOB_STATUS, JOB_TYPE } from '../utils/constants';
 import SubmitBtn from '../components/SubmitBtn';
 
+const editJobQuery = (jobId?: string) => ({
+  queryKey: ['job', jobId] as const,
+  queryFn: async () => {
+    const { data } = await customFetch.get<{ job: Job }>(`/jobs/${jobId}`);
+    return data;
+  },
+});
+
 const EditJob: React.FC = () => {
-  const { job } = useLoaderData<{ job: Job }>();
+  const jobId = useLoaderData<string>();
+  const { data } = useQuery<{ job: Job }>(editJobQuery(jobId));
+
+  if (!data) return null;
+
+  const { job } = data;
 
   // console.log({ job });
   return (
@@ -50,30 +64,31 @@ const EditJob: React.FC = () => {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  try {
+export const loader =
+  (queryClient: QueryClient) =>
+  async ({ params }: LoaderFunctionArgs) => {
     const { jobId } = params;
-    const { data } = await customFetch.get<Job>(`/jobs/${jobId}`);
+    await queryClient.ensureQueryData(editJobQuery(jobId));
 
-    return data;
-  } catch (error) {
-    handleApiErr(error);
-  }
-};
+    return jobId;
+  };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  try {
-    const formData = await request.formData();
-    const data = Object.fromEntries(formData) as JobSubmitData;
+export const action =
+  (queryClient: QueryClient) =>
+  async ({ request, params }: ActionFunctionArgs) => {
+    try {
+      const formData = await request.formData();
+      const data = Object.fromEntries(formData) as JobSubmitData;
 
-    await customFetch.patch(`/jobs/${params.jobId}`, data);
-    toast.success('Job edited successfully');
+      await customFetch.patch(`/jobs/${params.jobId}`, data);
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      toast.success('Job edited successfully');
 
-    return redirect('../all-jobs');
-  } catch (error) {
-    handleApiErr(error);
-  }
-};
+      return redirect('../all-jobs');
+    } catch (error) {
+      handleApiErr(error);
+    }
+  };
 
 export default EditJob;

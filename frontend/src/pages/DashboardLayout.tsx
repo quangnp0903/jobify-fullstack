@@ -1,11 +1,13 @@
 import { createContext, useContext, useState } from 'react';
-import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
+import { Outlet, redirect, useNavigate, useNavigation } from 'react-router-dom';
 import styled from 'styled-components';
+import { useQuery, type QueryClient } from '@tanstack/react-query';
 
 import { BigSidebar, SmallSidebar, Navbar } from '../components';
 import { checkDefaultTheme } from '../App';
 import type { User } from '../models/User';
 import customFetch from '../utils/customFetch';
+import Loading from '../components/Loading';
 
 type DashboardCtxObj = {
   user: User;
@@ -20,18 +22,26 @@ type DashboardLoaderData = {
   user: User;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const loader = async (): Promise<DashboardLoaderData> => {
-  try {
-    const { data } = await customFetch.get<DashboardLoaderData>(
-      '/users/current-user'
-    );
-
-    return data;
-  } catch (error) {
-    throw redirect('/');
-  }
+const userQuery = {
+  queryKey: ['user'],
+  queryFn: async () => {
+    const response = await customFetch.get('/users/current-user');
+    return response.data;
+  },
 };
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const loader =
+  (queryClient: QueryClient) => async (): Promise<DashboardLoaderData> => {
+    try {
+      const data =
+        await queryClient.ensureQueryData<DashboardLoaderData>(userQuery);
+
+      return data;
+    } catch (error) {
+      throw redirect('/');
+    }
+  };
 
 const DashboardContext = createContext<DashboardCtxObj>({
   user: {
@@ -50,10 +60,15 @@ const DashboardContext = createContext<DashboardCtxObj>({
   logoutUser: () => {},
 });
 
-const DashboardLayout: React.FC = () => {
-  const { user } = useLoaderData<typeof loader>();
+const DashboardLayout: React.FC<{ queryClient: QueryClient }> = ({
+  queryClient,
+}) => {
+  const { data } = useQuery<DashboardLoaderData>(userQuery);
+  const { user } = data!;
   const navigate = useNavigate();
+  const navigation = useNavigation();
 
+  const isPageLoading = navigation.state === 'loading';
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
 
@@ -72,6 +87,7 @@ const DashboardLayout: React.FC = () => {
   const logoutUser = async () => {
     navigate('/');
     await customFetch.get('/auth/logout');
+    queryClient.invalidateQueries();
     // toast.success('Logging out...');
   };
 
@@ -93,7 +109,7 @@ const DashboardLayout: React.FC = () => {
           <div>
             <Navbar />
             <div className="dashboard-page">
-              <Outlet context={{ user }} />
+              {isPageLoading ? <Loading /> : <Outlet context={{ user }} />}
             </div>
           </div>
         </main>

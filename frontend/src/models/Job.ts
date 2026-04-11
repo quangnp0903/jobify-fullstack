@@ -37,4 +37,12 @@ export type SearchJobData = {
   jobStatus: string;
   jobType: string;
   sort: string;
+  page: number;
+};
+
+export type JobsData = {
+  jobs: Job[];
+  totalJobs: number;
+  currentPage: number;
+  numOfPages: number;
 };

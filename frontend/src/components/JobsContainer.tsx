@@ -4,7 +4,8 @@ import JobItem from './JobItem';
 import PagingContainer from './PagingContainer';
 
 const JobsContainer: React.FC = () => {
-  const { jobs, totalJobs } = useAllJobContext();
+  const { data } = useAllJobContext();
+  const { jobs, totalJobs } = data;
 
   if (jobs.length === 0) {
     return (

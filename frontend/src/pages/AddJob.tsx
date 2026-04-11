@@ -15,6 +15,7 @@ import type { JobSubmitData } from '../models/Job';
 import { handleApiErr } from '../utils/common';
 import Wrapper from '../assets/wrappers/DashboardForm';
 import SubmitBtn from '../components/SubmitBtn';
+import type { QueryClient } from '@tanstack/react-query';
 
 type DashboardOutletContext = {
   user: User;
@@ -54,18 +55,21 @@ const AddJob: React.FC = () => {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const formData = await request.formData();
-  const data = Object.fromEntries(formData) as JobSubmitData;
+export const action =
+  (queryClient: QueryClient) =>
+  async ({ request }: ActionFunctionArgs) => {
+    const formData = await request.formData();
+    const data = Object.fromEntries(formData) as JobSubmitData;
 
-  try {
-    await customFetch.post('/jobs', data);
+    try {
+      await customFetch.post('/jobs', data);
 
-    toast.success('Job added successfully');
-    return redirect('all-jobs');
-  } catch (error) {
-    handleApiErr(error);
-  }
-};
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      toast.success('Job added successfully');
+      return redirect('all-jobs');
+    } catch (error) {
+      handleApiErr(error);
+    }
+  };
 
 export default AddJob;
