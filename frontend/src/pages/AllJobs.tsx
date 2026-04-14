@@ -1,11 +1,14 @@
-import { createContext, useContext } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 import { useLoaderData, type LoaderFunctionArgs } from 'react-router-dom';
-import { useQuery, type QueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, type QueryClient } from '@tanstack/react-query';
 
 import { JobsContainer, SearchContainer } from '../components';
 import type { SearchJobData, JobsData } from '../models/Job';
 // import { handleApiErr } from '../utils/common';
 import customFetch from '../utils/customFetch';
+import Modal from '../components/Modal';
+import DeleteConfirmation from '../components/DeleteConfirmation';
+import { toast } from 'react-toastify';
 
 type AllJobsLoaderData = {
   searchValues: SearchJobData;
@@ -74,39 +77,70 @@ export const loader =
 type AllJobsCtxObj = {
   searchValues: SearchJobData;
   data: JobsData;
+  onDeleteRequest: (id: string) => void;
 };
 
-const AllJobsContext = createContext<AllJobsCtxObj>({
-  searchValues: {
-    search: '',
-    jobStatus: 'all',
-    jobType: 'all',
-    sort: 'newest',
-    page: 1,
-  },
-  data: {
-    jobs: [],
-    currentPage: 1,
-    numOfPages: 1,
-    totalJobs: 0,
-  },
-});
+const AllJobsContext = createContext<AllJobsCtxObj | null>(null);
 
-const AllJobs = () => {
+const AllJobs: React.FC<{ queryClient: QueryClient }> = ({ queryClient }) => {
   const { searchValues } = useLoaderData<AllJobsLoaderData>();
   const { data } = useQuery<JobsData>(allJobsQuery(searchValues));
+  const [jobToDelete, setJobToDelete] = useState<string | null>(null);
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => customFetch.delete(`/jobs/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      toast.success('Job deleted successfully');
+      setJobToDelete(null);
+    },
+  });
+
+  const deleteRequestHandler = useCallback(
+    (id: string) => setJobToDelete(id),
+    []
+  );
+
+  const closeModalHandler = () => {
+    deleteMutation.reset();
+    setJobToDelete(null);
+  };
 
   if (!data) return null;
 
   return (
-    <AllJobsContext.Provider value={{ data, searchValues }}>
-      <SearchContainer />
-      <JobsContainer />
-    </AllJobsContext.Provider>
+    <>
+      {jobToDelete && (
+        <Modal onClose={closeModalHandler}>
+          <DeleteConfirmation
+            onCancel={closeModalHandler}
+            onConfirm={() => deleteMutation.mutate(jobToDelete)}
+            isLoading={deleteMutation.isPending}
+            errorMessage={
+              deleteMutation.error instanceof Error
+                ? deleteMutation.error.message
+                : undefined
+            }
+          />
+        </Modal>
+      )}
+      <AllJobsContext.Provider
+        value={{ data, searchValues, onDeleteRequest: deleteRequestHandler }}
+      >
+        <SearchContainer />
+        <JobsContainer />
+      </AllJobsContext.Provider>
+    </>
   );
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useAllJobContext = () => useContext(AllJobsContext);
+export const useAllJobContext = () => {
+  const ctx = useContext(AllJobsContext);
+  if (!ctx) {
+    throw new Error('useAllJobContext must be used within AllJobs');
+  }
+  return ctx;
+};
 
 export default AllJobs;

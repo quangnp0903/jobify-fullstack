@@ -23,7 +23,6 @@ import {
   loader as editJobLoader,
   action as editJobAction,
 } from './pages/EditJob';
-import { action as deleteJobAction } from './pages/DeleteJob';
 import { loader as adminLoader } from './pages/Admin';
 import { action as profileAction } from './pages/Profile';
 import { loader as statsLoader } from './pages/Stats';
@@ -85,10 +84,6 @@ const router = createBrowserRouter([
             action: editJobAction(queryClient),
           },
           {
-            path: 'delete-job/:jobId',
-            action: deleteJobAction(queryClient),
-          },
-          {
             path: 'stats',
             element: <Stats />,
             loader: statsLoader(queryClient),
@@ -96,7 +91,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'all-jobs',
-            element: <AllJobs />,
+            element: <AllJobs queryClient={queryClient} />,
             loader: allJobsLoader(queryClient),
           },
           {

@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { Outlet, redirect, useNavigate, useNavigation } from 'react-router-dom';
 import styled from 'styled-components';
-import { useQuery, type QueryClient } from '@tanstack/react-query';
+import { QueryClient, useQuery } from '@tanstack/react-query';
 
 import { BigSidebar, SmallSidebar, Navbar } from '../components';
 import { checkDefaultTheme } from '../App';
@@ -22,6 +22,7 @@ type DashboardCtxObj = {
   toggleDarkTheme: () => void;
   toggleSidebar: () => void;
   logoutUser: () => void;
+  // queryClient?: QueryClient;
 };
 
 type DashboardLoaderData = {
@@ -64,6 +65,7 @@ const DashboardContext = createContext<DashboardCtxObj>({
   toggleDarkTheme: () => {},
   toggleSidebar: () => {},
   logoutUser: () => {},
+  // queryClient: {}
 });
 
 const DashboardLayout: React.FC<{ queryClient: QueryClient }> = ({

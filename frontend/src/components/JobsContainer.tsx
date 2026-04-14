@@ -4,7 +4,10 @@ import JobItem from './JobItem';
 import PagingContainer from './PagingContainer';
 
 const JobsContainer: React.FC = () => {
-  const { data } = useAllJobContext();
+  const { data, onDeleteRequest } = useAllJobContext();
+
+  if (!data) return null;
+
   const { jobs, totalJobs } = data;
 
   if (jobs.length === 0) {
@@ -22,7 +25,7 @@ const JobsContainer: React.FC = () => {
       </h5>
       <div className="jobs">
         {jobs.map((job) => (
-          <JobItem key={job._id} {...job} />
+          <JobItem key={job._id} {...job} onDelete={onDeleteRequest}/>
         ))}
       </div>
       <PagingContainer />

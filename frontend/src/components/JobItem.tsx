@@ -1,56 +1,64 @@
+import { memo } from 'react';
 import styled from 'styled-components';
 import { FaCalendarAlt, FaLocationArrow, FaBriefcase } from 'react-icons/fa';
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
+import { Link } from 'react-router-dom';
 
 import type { Job } from '../models/Job';
 import JobInfo from './JobInfo';
-import { Form, Link } from 'react-router-dom';
 
 day.extend(advancedFormat);
 
-const JobItem: React.FC<Job> = ({
-  _id,
-  company,
-  position,
-  jobStatus,
-  jobType,
-  jobLocation,
-  createdAt,
-}) => {
-  return (
-    <Wrapper>
-      <header>
-        <div className="main-icon">{company.charAt(0)}</div>
-        <div className="info">
-          <h5>{position}</h5>
-          <p>{company}</p>
-        </div>
-      </header>
-      <div className="content">
-        <div className="content-center">
-          <JobInfo icon={<FaLocationArrow />} text={jobLocation} />
-          <JobInfo
-            icon={<FaCalendarAlt />}
-            text={day(createdAt).format('MMM Do, YYYY')}
-          />
-          <JobInfo icon={<FaBriefcase />} text={jobType} />
-          <div className={`status ${jobStatus}`}>{jobStatus}</div>
-        </div>
-        <footer className="actions">
-          <Link className="btn" to={`../edit-job/${_id}`}>
-            Edit
-          </Link>
-          <Form method="DELETE" action={`../delete-job/${_id}`}>
+const JobItem: React.FC<Job & { onDelete: (id: string) => void }> = memo(
+  ({
+    _id,
+    company,
+    position,
+    jobStatus,
+    jobType,
+    jobLocation,
+    createdAt,
+    onDelete,
+  }) => {
+    console.log('render', _id);
+    return (
+      <Wrapper>
+        <header>
+          <div className="main-icon">{company.charAt(0)}</div>
+          <div className="info">
+            <h5>{position}</h5>
+            <p>{company}</p>
+          </div>
+        </header>
+        <div className="content">
+          <div className="content-center">
+            <JobInfo icon={<FaLocationArrow />} text={jobLocation} />
+            <JobInfo
+              icon={<FaCalendarAlt />}
+              text={day(createdAt).format('MMM Do, YYYY')}
+            />
+            <JobInfo icon={<FaBriefcase />} text={jobType} />
+            <div className={`status ${jobStatus}`}>{jobStatus}</div>
+          </div>
+          <footer className="actions">
+            <Link className="btn" to={`../edit-job/${_id}`}>
+              Edit
+            </Link>
+            <button type="button" className="btn" onClick={() => onDelete(_id)}>
+              Delete
+            </button>
+            {/* <Form method="DELETE" action={`../delete-job/${_id}`}>
             <button type="submit" className="btn">
               Delete
             </button>
-          </Form>
-        </footer>
-      </div>
-    </Wrapper>
-  );
-};
+          </Form> */}
+          </footer>
+        </div>
+      </Wrapper>
+    );
+  }
+);
 
 const Wrapper = styled.article`
   border: 1px;
