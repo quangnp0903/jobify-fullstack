@@ -13,8 +13,8 @@ const NavLinks: React.FC<{ isBigSidebar?: boolean }> = ({
         const { text, path, icon } = link;
         const { role } = user;
 
-        // should change to admin, stats for fake-admin only
-        if (role !== 'admin' && path === 'stats') return;
+        // render admin panel only for admin page
+        if (role !== 'admin' && path === 'admin') return;
 
         return (
           <NavLink
