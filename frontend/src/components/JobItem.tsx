@@ -21,7 +21,7 @@ const JobItem: React.FC<Job & { onDelete: (id: string) => void }> = memo(
     createdAt,
     onDelete,
   }) => {
-    console.log('render', _id);
+    // console.log('render', _id);
     return (
       <Wrapper>
         <header>
