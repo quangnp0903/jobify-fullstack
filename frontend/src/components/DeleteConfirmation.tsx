@@ -12,11 +12,11 @@ const DeleteConfirmation: React.FC<{
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onCancel();
+      if (e.key === 'Escape' && !isLoading) onCancel();
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [onCancel]);
+  }, [onCancel, isLoading]);
 
   return (
     <Wrapper>
@@ -25,12 +25,16 @@ const DeleteConfirmation: React.FC<{
 
       {errorMessage && <p className="error">{errorMessage}</p>}
 
-      <div className="confirmationActions">
-        <button className="btn" onClick={onCancel}>
+      <div className="confirmation-actions">
+        <button className="btn btn-secondary" onClick={onCancel}>
           No
         </button>
-        <button className="btn" disabled={isLoading} onClick={onConfirm}>
-          Yes
+        <button
+          className="btn btn-danger"
+          disabled={isLoading}
+          onClick={onConfirm}
+        >
+          {isLoading ? 'Deleting...' : 'Yes'}
         </button>
       </div>
     </Wrapper>
@@ -62,7 +66,7 @@ const Wrapper = styled.div`
     font-size: 0.9rem;
   }
 
-  .confirmationActions {
+  .confirmation-actions {
     display: flex;
     justify-content: center;
     gap: 0.75rem;
@@ -78,6 +82,7 @@ const Wrapper = styled.div`
 
     &:hover {
       background: var(--red-dark-hover);
+      color: var(--red-dark);
     }
   }
 
