@@ -1,5 +1,6 @@
 import { useLoaderData } from 'react-router-dom';
 import { FaSuitcaseRolling, FaCalendarCheck } from 'react-icons/fa';
+import { useQuery, type QueryClient } from '@tanstack/react-query';
 
 import customFetch from '../utils/customFetch';
 import type { ApiError } from '../models/Error';
@@ -11,8 +12,20 @@ type AdminLoaderData = {
   jobs: number;
 };
 
+const adminQuery = {
+  queryKey: ['admin'],
+  queryFn: async () => {
+    const { data } = await customFetch.get<AdminLoaderData>(
+      '/users/admin/app-stats'
+    );
+    // toast.success('Login successfully');
+    return data;
+  },
+};
+
 const Admin: React.FC = () => {
-  const { users, jobs } = useLoaderData<AdminLoaderData>();
+  const { data } = useQuery<AdminLoaderData>(adminQuery);
+  const { users, jobs } = data!;
 
   // console.log({ users, jobs });
 
@@ -37,13 +50,9 @@ const Admin: React.FC = () => {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const loader = async () => {
+export const loader = (queryClient: QueryClient) => async () => {
   try {
-    const { data } = await customFetch.get<AdminLoaderData>(
-      '/users/admin/app-stats'
-    );
-    // toast.success('Login successfully');
-    return data;
+    await queryClient.ensureQueryData<AdminLoaderData>(adminQuery);
   } catch (error) {
     const err = error as ApiError;
     throw new Response(err.response?.data?.msg, { status: err.status });

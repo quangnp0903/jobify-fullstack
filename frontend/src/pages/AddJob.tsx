@@ -15,7 +15,7 @@ import type { JobSubmitData } from '../models/Job';
 import { handleApiErr } from '../utils/common';
 import Wrapper from '../assets/wrappers/DashboardForm';
 import SubmitBtn from '../components/SubmitBtn';
-import type { QueryClient } from '@tanstack/react-query';
+import type { Query, QueryClient } from '@tanstack/react-query';
 
 type DashboardOutletContext = {
   user: User;
@@ -64,7 +64,10 @@ export const action =
     try {
       await customFetch.post('/jobs', data);
 
-      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      queryClient.invalidateQueries({
+        predicate: (query: Query) =>
+          ['jobs', 'admin'].includes(query.queryKey[0] as string),
+      });
       toast.success('Job added successfully');
       return redirect('all-jobs');
     } catch (error) {

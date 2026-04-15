@@ -1,6 +1,11 @@
 import { createContext, useCallback, useContext, useState } from 'react';
 import { useLoaderData, type LoaderFunctionArgs } from 'react-router-dom';
-import { useMutation, useQuery, type QueryClient } from '@tanstack/react-query';
+import {
+  Query,
+  useMutation,
+  useQuery,
+  type QueryClient,
+} from '@tanstack/react-query';
 
 import { JobsContainer, SearchContainer } from '../components';
 import type { SearchJobData, JobsData } from '../models/Job';
@@ -90,7 +95,10 @@ const AllJobs: React.FC<{ queryClient: QueryClient }> = ({ queryClient }) => {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => customFetch.delete(`/jobs/${id}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      queryClient.invalidateQueries({
+        predicate: (query: Query) =>
+          ['jobs', 'admin'].includes(query.queryKey[0] as string),
+      });
       toast.success('Job deleted successfully');
       setJobToDelete(null);
     },
