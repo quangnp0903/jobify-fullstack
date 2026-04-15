@@ -1,4 +1,3 @@
-import { useLoaderData } from 'react-router-dom';
 import { FaSuitcaseRolling, FaCalendarCheck } from 'react-icons/fa';
 import { useQuery, type QueryClient } from '@tanstack/react-query';
 
