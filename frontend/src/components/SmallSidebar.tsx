@@ -7,7 +7,7 @@ import NavLinks from './NavLinks';
 
 const SmallSidebar: React.FC = () => {
   const { showSidebar, toggleSidebar } = useDashboardContext();
-  console.log({ showSidebar });
+  // console.log({ showSidebar });
 
   return (
     <Wrapper>

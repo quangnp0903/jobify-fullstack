@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 
-// import { useDashboardContext } from '../pages/DashboardLayout';
 import Logo from './Logo';
 import NavLinks from './NavLinks';
+import { useDashboardContext } from '../pages/DashboardLayout';
 
 const BigSizeBar: React.FC = () => {
-  // const { showSidebar } = useDashboardContext();
-  const showSidebar = true;
+  const { showSidebar } = useDashboardContext();
 
   return (
     <Wrapper>
