@@ -93,6 +93,7 @@ const router = createBrowserRouter([
             path: 'all-jobs',
             element: <AllJobs queryClient={queryClient} />,
             loader: allJobsLoader(queryClient),
+            errorElement: <ErrorElement />,
           },
           {
             path: 'profile',

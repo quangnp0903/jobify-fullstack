@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { Outlet, redirect, useNavigate, useNavigation } from 'react-router-dom';
+import { Outlet, useNavigate, useNavigation } from 'react-router-dom';
 import styled from 'styled-components';
 import { QueryClient, useQuery } from '@tanstack/react-query';
 
@@ -40,33 +40,13 @@ const userQuery = {
 // eslint-disable-next-line react-refresh/only-export-components
 export const loader =
   (queryClient: QueryClient) => async (): Promise<DashboardLoaderData> => {
-    try {
-      const data =
-        await queryClient.ensureQueryData<DashboardLoaderData>(userQuery);
+    const data =
+      await queryClient.ensureQueryData<DashboardLoaderData>(userQuery);
 
-      return data;
-    } catch (error) {
-      throw redirect('/');
-    }
+    return data;
   };
 
-const DashboardContext = createContext<DashboardCtxObj>({
-  user: {
-    _id: '',
-    name: '',
-    email: '',
-    lastName: '',
-    location: '',
-    role: '',
-    avatar: '',
-  },
-  showSidebar: false,
-  isDarkTheme: false,
-  toggleDarkTheme: () => {},
-  toggleSidebar: () => {},
-  logoutUser: () => {},
-  // queryClient: {}
-});
+const DashboardContext = createContext<DashboardCtxObj | null>(null);
 
 const DashboardLayout: React.FC<{ queryClient: QueryClient }> = ({
   queryClient,
@@ -168,6 +148,14 @@ const Wrapper = styled.section`
 `;
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useDashboardContext = () => useContext(DashboardContext);
+export const useDashboardContext = () => {
+  const ctx = useContext(DashboardContext);
+
+  if (!ctx) {
+    throw new Error('useDashboardContext must be used within DashboardLayout');
+  }
+
+  return ctx;
+};
 
 export default DashboardLayout;

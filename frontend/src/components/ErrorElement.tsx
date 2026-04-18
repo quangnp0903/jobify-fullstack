@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 const ErrorElement: React.FC = () => {
   const error = useRouteError();
   const hasHandled = useRef(false);
+
   console.log('err', error);
 
   useEffect(() => {

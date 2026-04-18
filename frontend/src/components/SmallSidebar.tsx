@@ -6,13 +6,14 @@ import Logo from './Logo';
 import NavLinks from './NavLinks';
 
 const SmallSidebar: React.FC = () => {
-  const { showSidebar } = useDashboardContext();
+  const { showSidebar, toggleSidebar } = useDashboardContext();
+  console.log({ showSidebar });
 
   return (
     <Wrapper>
       <div className={`sidebar-container ${showSidebar ? 'show-sidebar' : ''}`}>
         <div className="content">
-          <button className="close-btn">
+          <button className="close-btn" onClick={toggleSidebar}>
             <FaTimes />
           </button>
           <header>

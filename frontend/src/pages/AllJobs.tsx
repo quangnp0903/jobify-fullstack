@@ -49,7 +49,6 @@ const allJobsQuery = (params: Partial<SearchParams>) => ({
 export const loader =
   (queryClient: QueryClient) =>
   async ({ request }: LoaderFunctionArgs) => {
-    // const params = getSearchParams(request.url);
     const rawParams = Object.fromEntries(new URL(request.url).searchParams);
     const params = normalizeParams({
       ...rawParams,
@@ -59,24 +58,6 @@ export const loader =
     await queryClient.ensureQueryData(allJobsQuery(params));
 
     return { searchValues: { ...params } };
-    /* try {
-      const params = Object.fromEntries(new URL(request.url).searchParams);
-      const { data } = await customFetch.get<AllJobsLoaderData>('/jobs', {
-        params,
-      });
-
-      const defaultParams = {
-        search: '',
-        jobStatus: 'all',
-        jobType: 'all',
-        sort: 'newest',
-      };
-
-      // console.log({ ...data, searchValues: { ...params } });
-      return { ...data, searchValues: { ...defaultParams, ...params } };
-    } catch (error) {
-      return handleApiErr(error);
-    } */
   };
 
 type AllJobsCtxObj = {
@@ -145,9 +126,11 @@ const AllJobs: React.FC<{ queryClient: QueryClient }> = ({ queryClient }) => {
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAllJobContext = () => {
   const ctx = useContext(AllJobsContext);
+
   if (!ctx) {
     throw new Error('useAllJobContext must be used within AllJobs');
   }
+
   return ctx;
 };
 

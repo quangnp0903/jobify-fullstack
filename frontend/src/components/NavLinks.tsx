@@ -21,7 +21,7 @@ const NavLinks: React.FC<{ isBigSidebar?: boolean }> = ({
             key={path}
             className="nav-link"
             to={path}
-            onClick={isBigSidebar ? toggleSidebar : undefined}
+            onClick={isBigSidebar ? undefined : toggleSidebar}
             end
           >
             <span className="icon">{icon}</span> {text}

@@ -17,7 +17,6 @@ const adminQuery = {
     const { data } = await customFetch.get<AdminLoaderData>(
       '/users/admin/app-stats'
     );
-    // toast.success('Login successfully');
     return data;
   },
 };
