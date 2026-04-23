@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { Outlet, useNavigate, useNavigation } from 'react-router-dom';
+import { Outlet, redirect, useNavigate, useNavigation } from 'react-router-dom';
 import styled from 'styled-components';
 import { QueryClient, useQuery } from '@tanstack/react-query';
 
@@ -14,6 +14,8 @@ import { checkDefaultTheme } from '../App';
 import type { User } from '../models/User';
 import customFetch from '../utils/customFetch';
 import Loading from '../components/Loading';
+import type { ApiError } from '../models/Error';
+import type { AxiosError } from 'axios';
 
 type DashboardCtxObj = {
   user: User;
@@ -39,11 +41,17 @@ const userQuery = {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const loader =
-  (queryClient: QueryClient) => async (): Promise<DashboardLoaderData> => {
-    const data =
-      await queryClient.ensureQueryData<DashboardLoaderData>(userQuery);
-
-    return data;
+  (queryClient: QueryClient) =>
+  async (): Promise<DashboardLoaderData | Response> => {
+    try {
+      return await queryClient.ensureQueryData(userQuery);
+    } catch (error) {
+      const apiErr = error as AxiosError;
+      if (apiErr?.response?.status === 401) {
+        return redirect('/');
+      }
+      throw error;
+    }
   };
 
 const DashboardContext = createContext<DashboardCtxObj | null>(null);
@@ -57,7 +65,7 @@ const DashboardLayout: React.FC<{ queryClient: QueryClient }> = ({
   const navigation = useNavigation();
 
   const isPageLoading = navigation.state === 'loading';
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(true);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
   const [isAuthError, setIsAuthError] = useState(false);
 
