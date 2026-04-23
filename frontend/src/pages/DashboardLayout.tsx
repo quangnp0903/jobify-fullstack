@@ -14,7 +14,6 @@ import { checkDefaultTheme } from '../App';
 import type { User } from '../models/User';
 import customFetch from '../utils/customFetch';
 import Loading from '../components/Loading';
-import type { ApiError } from '../models/Error';
 import type { AxiosError } from 'axios';
 
 type DashboardCtxObj = {
