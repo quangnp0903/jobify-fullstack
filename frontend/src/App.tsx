@@ -1,35 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
-import {
-  DashboardLayout,
-  HomeLayout,
-  Landing,
-  Login,
-  Register,
-  Error,
-  AddJob,
-  Stats,
-  AllJobs,
-  Profile,
-  EditJob,
-  Admin,
-} from './pages';
-import { action as registerAction } from './pages/Register';
-import { action as loginAction } from './pages/Login';
-import { action as addJobAction } from './pages/AddJob';
-import { loader as layoutLoader } from './pages/DashboardLayout';
-import { loader as allJobsLoader } from './pages/AllJobs';
-import {
-  loader as editJobLoader,
-  action as editJobAction,
-} from './pages/EditJob';
-import { loader as adminLoader } from './pages/Admin';
-import { action as profileAction } from './pages/Profile';
-import { loader as statsLoader } from './pages/Stats';
-import AdminError from './pages/AdminError';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import ErrorElement from './components/ErrorElement';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,61 +21,145 @@ export const checkDefaultTheme = () => {
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <HomeLayout />,
-    errorElement: <Error />,
+    lazy: async () => {
+      const [{ default: HomeLayout }, { default: Error }] = await Promise.all([
+        import('./pages/HomeLayout'),
+        import('./pages/Error'),
+      ]);
+
+      return {
+        Component: HomeLayout,
+        ErrorBoundary: Error,
+      };
+    },
     children: [
       {
         index: true,
-        element: <Landing />,
+        lazy: async () => {
+          const { default: Landing } = await import('./pages/Landing');
+          return { Component: Landing };
+        },
       },
       {
         path: 'register',
-        element: <Register />,
-        action: registerAction,
+        lazy: async () => {
+          const { default: Register, action } = await import('./pages/Register');
+          return {
+            Component: Register,
+            action,
+          };
+        },
       },
       {
         path: 'login',
-        element: <Login />,
-        action: loginAction(queryClient),
+        lazy: async () => {
+          const { default: Login, action } = await import('./pages/Login');
+          return {
+            Component: Login,
+            action: action(queryClient),
+          };
+        },
       },
       {
         path: 'dashboard',
-        element: <DashboardLayout queryClient={queryClient} />,
-        loader: layoutLoader(queryClient),
+        lazy: async () => {
+          const { default: DashboardLayout, loader } = await import(
+            './pages/DashboardLayout'
+          );
+
+          return {
+            Component: () => <DashboardLayout queryClient={queryClient} />,
+            loader: loader(queryClient),
+          };
+        },
         children: [
           {
             index: true,
-            element: <AddJob />,
-            action: addJobAction(queryClient),
+            lazy: async () => {
+              const { default: AddJob, action } = await import(
+                './pages/AddJob'
+              );
+
+              return {
+                Component: AddJob,
+                action: action(queryClient),
+              };
+            },
           },
           {
             path: 'edit-job/:jobId',
-            element: <EditJob />,
-            loader: editJobLoader(queryClient),
-            action: editJobAction(queryClient),
+            lazy: async () => {
+              const { default: EditJob, loader, action } = await import(
+                './pages/EditJob'
+              );
+
+              return {
+                Component: EditJob,
+                loader: loader(queryClient),
+                action: action(queryClient),
+              };
+            },
           },
           {
             path: 'stats',
-            element: <Stats />,
-            loader: statsLoader(queryClient),
-            errorElement: <ErrorElement />,
+            lazy: async () => {
+              const [{ default: Stats, loader }, { default: ErrorElement }] =
+                await Promise.all([
+                  import('./pages/Stats'),
+                  import('./components/ErrorElement'),
+                ]);
+
+              return {
+                Component: Stats,
+                loader: loader(queryClient),
+                ErrorBoundary: ErrorElement,
+              };
+            },
           },
           {
             path: 'all-jobs',
-            element: <AllJobs queryClient={queryClient} />,
-            loader: allJobsLoader(queryClient),
-            errorElement: <ErrorElement />,
+            lazy: async () => {
+              const [{ default: AllJobs, loader }, { default: ErrorElement }] =
+                await Promise.all([
+                  import('./pages/AllJobs'),
+                  import('./components/ErrorElement'),
+                ]);
+
+              return {
+                Component: () => <AllJobs queryClient={queryClient} />,
+                loader: loader(queryClient),
+                ErrorBoundary: ErrorElement,
+              };
+            },
           },
           {
             path: 'profile',
-            element: <Profile />,
-            action: profileAction(queryClient),
+            lazy: async () => {
+              const { default: Profile, action } = await import(
+                './pages/Profile'
+              );
+
+              return {
+                Component: Profile,
+                action: action(queryClient),
+              };
+            },
           },
           {
             path: 'admin',
-            element: <Admin />,
-            loader: adminLoader(queryClient),
-            errorElement: <AdminError />,
+            lazy: async () => {
+              const [{ default: Admin, loader }, { default: AdminError }] =
+                await Promise.all([
+                  import('./pages/Admin'),
+                  import('./pages/AdminError'),
+                ]);
+
+              return {
+                Component: Admin,
+                loader: loader(queryClient),
+                ErrorBoundary: AdminError,
+              };
+            },
           },
         ],
       },

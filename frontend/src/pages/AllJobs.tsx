@@ -1,4 +1,10 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import { useLoaderData, type LoaderFunctionArgs } from 'react-router-dom';
 import {
   Query,
@@ -95,7 +101,19 @@ const AllJobs: React.FC<{ queryClient: QueryClient }> = ({ queryClient }) => {
     setJobToDelete(null);
   };
 
-  if (!data) return null;
+  const allJobsContextValue = useMemo(
+    () =>
+      data
+        ? {
+            data,
+            searchValues,
+            onDeleteRequest: deleteRequestHandler,
+          }
+        : null,
+    [data, searchValues, deleteRequestHandler]
+  );
+
+  if (!allJobsContextValue) return null;
 
   return (
     <>
@@ -120,9 +138,7 @@ const AllJobs: React.FC<{ queryClient: QueryClient }> = ({ queryClient }) => {
           />
         </Modal>
       )}
-      <AllJobsContext.Provider
-        value={{ data, searchValues, onDeleteRequest: deleteRequestHandler }}
-      >
+      <AllJobsContext.Provider value={allJobsContextValue}>
         <SearchContainer />
         <JobsContainer />
       </AllJobsContext.Provider>

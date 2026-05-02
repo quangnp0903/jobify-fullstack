@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { Outlet, redirect, useNavigate, useNavigation } from 'react-router-dom';
@@ -68,17 +69,20 @@ const DashboardLayout: React.FC<{ queryClient: QueryClient }> = ({
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
   const [isAuthError, setIsAuthError] = useState(false);
 
-  const toggleDarkTheme = () => {
-    const newDarkTheme = !isDarkTheme;
+  const toggleDarkTheme = useCallback(() => {
+    setIsDarkTheme((prev) => {
+      const newDarkTheme = !prev;
 
-    setIsDarkTheme(newDarkTheme);
-    document.body.classList.toggle('dark-theme', newDarkTheme);
-    localStorage.setItem('darkTheme', newDarkTheme.toString());
-  };
+      document.body.classList.toggle('dark-theme', newDarkTheme);
+      localStorage.setItem('darkTheme', newDarkTheme.toString());
 
-  const toggleSidebar = () => {
-    setShowSidebar(!showSidebar);
-  };
+      return newDarkTheme;
+    });
+  }, []);
+
+  const toggleSidebar = useCallback(() => {
+    setShowSidebar((prev) => !prev);
+  }, []);
 
   const logoutUser = useCallback(async () => {
     navigate('/');
@@ -109,17 +113,29 @@ const DashboardLayout: React.FC<{ queryClient: QueryClient }> = ({
     logoutUser();
   }, [isAuthError, logoutUser]);
 
+  const dashboardContextValue = useMemo(
+    () => ({
+      user,
+      showSidebar,
+      isDarkTheme,
+      toggleDarkTheme,
+      toggleSidebar,
+      logoutUser,
+    }),
+    [
+      user,
+      showSidebar,
+      isDarkTheme,
+      toggleDarkTheme,
+      toggleSidebar,
+      logoutUser,
+    ]
+  );
+
+  const outletContextValue = useMemo(() => ({ user }), [user]);
+
   return (
-    <DashboardContext.Provider
-      value={{
-        user,
-        showSidebar,
-        isDarkTheme,
-        toggleDarkTheme,
-        toggleSidebar,
-        logoutUser,
-      }}
-    >
+    <DashboardContext.Provider value={dashboardContextValue}>
       <Wrapper>
         <main className="dashboard">
           <SmallSidebar />
@@ -127,7 +143,11 @@ const DashboardLayout: React.FC<{ queryClient: QueryClient }> = ({
           <div>
             <Navbar />
             <div className="dashboard-page">
-              {isPageLoading ? <Loading /> : <Outlet context={{ user }} />}
+              {isPageLoading ? (
+                <Loading />
+              ) : (
+                <Outlet context={outletContextValue} />
+              )}
             </div>
           </div>
         </main>
