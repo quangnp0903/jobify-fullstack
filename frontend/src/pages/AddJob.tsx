@@ -65,7 +65,7 @@ export const action =
 
       queryClient.invalidateQueries({
         predicate: (query: Query) =>
-          ['jobs', 'admin'].includes(query.queryKey[0] as string),
+          ['jobs', 'admin', 'stats'].includes(query.queryKey[0] as string),
       });
       toast.success('Job added successfully');
       return redirect('all-jobs');

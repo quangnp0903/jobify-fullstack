@@ -78,7 +78,7 @@ const AllJobs: React.FC<{ queryClient: QueryClient }> = ({ queryClient }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query: Query) =>
-          ['jobs', 'admin'].includes(query.queryKey[0] as string),
+          ['jobs', 'admin', 'stats'].includes(query.queryKey[0] as string),
       });
       toast.success('Job deleted successfully');
       setJobToDelete(null);
@@ -101,6 +101,7 @@ const AllJobs: React.FC<{ queryClient: QueryClient }> = ({ queryClient }) => {
     <>
       {jobToDelete && (
         <Modal
+          titleId="delete-confirmation-title"
           onClose={() => {
             if (!deleteMutation.isPending) {
               closeModalHandler();

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Form, Link, useSubmit } from 'react-router-dom';
 
 import Wrapper from '../assets/wrappers/DashboardForm';
@@ -13,19 +14,28 @@ const SearchContainer: React.FC = () => {
   // console.log({ search, jobStatus, jobType, sort });
 
   const submit = useSubmit();
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const debounce = (onChange: (form: HTMLFormElement) => void) => {
-    let timer: ReturnType<typeof setTimeout>;
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      clearTimeout(timer);
-      const form = e.currentTarget.form;
-
-      if (!form) return;
-
-      timer = setTimeout(() => {
-        onChange(form);
-      }, 2000);
+  useEffect(() => {
+    return () => {
+      if (searchTimer.current) {
+        clearTimeout(searchTimer.current);
+      }
     };
+  }, []);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (searchTimer.current) {
+      clearTimeout(searchTimer.current);
+    }
+
+    const form = e.currentTarget.form;
+
+    if (!form) return;
+
+    searchTimer.current = setTimeout(() => {
+      submit(form);
+    }, 2000);
   };
 
   return (
@@ -36,7 +46,7 @@ const SearchContainer: React.FC = () => {
           name="search"
           type="text"
           defaultValue={search}
-          onChange={debounce((form) => submit(form))}
+          onChange={handleSearchChange}
         />
         <FormRowSelect
           name="jobStatus"

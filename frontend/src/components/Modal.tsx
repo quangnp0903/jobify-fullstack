@@ -1,13 +1,16 @@
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
-const Modal: React.FC<{ children: React.ReactNode; onClose: () => void }> = ({
-  children,
-  onClose,
-}) => {
+const Modal: React.FC<{
+  children: React.ReactNode;
+  onClose: () => void;
+  titleId?: string;
+}> = ({ children, onClose, titleId }) => {
   return ReactDOM.createPortal(
     <>
-      <Content>{children}</Content>
+      <Content role="dialog" aria-modal="true" aria-labelledby={titleId}>
+        {children}
+      </Content>
       <Backdrop onClick={onClose} />
     </>,
     document.getElementById('modal')!

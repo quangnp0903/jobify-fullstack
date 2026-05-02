@@ -20,7 +20,7 @@ const DeleteConfirmation: React.FC<{
 
   return (
     <Wrapper>
-      <h2>Are you sure?</h2>
+      <h2 id="delete-confirmation-title">Are you sure?</h2>
       <p>Do you really want to remove this job?</p>
 
       {errorMessage && <p className="error">{errorMessage}</p>}

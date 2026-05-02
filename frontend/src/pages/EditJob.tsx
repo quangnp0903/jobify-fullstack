@@ -84,6 +84,7 @@ export const action =
       await customFetch.patch(`/jobs/${params.jobId}`, data);
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
       queryClient.invalidateQueries({ queryKey: ['job', params.jobId] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
 
       toast.success('Job edited successfully');
 
