@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { useAllJobContext } from '../pages/AllJobs';
 import { useSearchParams } from 'react-router-dom';
+
+import { useAllJobContext } from '../pages/AllJobs';
 
 const PagingContainer: React.FC = () => {
   const { data } = useAllJobContext();

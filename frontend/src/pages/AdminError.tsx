@@ -4,7 +4,6 @@ import {
   isRouteErrorResponse,
   useNavigate,
 } from 'react-router-dom';
-
 import { toast } from 'react-toastify';
 
 const AdminError: React.FC = () => {

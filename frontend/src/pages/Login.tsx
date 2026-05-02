@@ -6,13 +6,13 @@ import {
   useActionData,
   useNavigate,
 } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import type { QueryClient } from '@tanstack/react-query';
 
 import Wrapper from '../assets/wrappers/RegisterAndLoginPage';
 import Logo from '../components/Logo';
 import FormRow from '../components/FormRow';
 import customFetch from '../utils/customFetch';
-import { toast } from 'react-toastify';
 import SubmitBtn from '../components/SubmitBtn';
 import type { ApiError } from '../models/Error';
 

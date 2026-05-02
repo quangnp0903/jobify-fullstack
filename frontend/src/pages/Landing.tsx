@@ -1,10 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-// import Wrapper from '../assets/wrappers/LandingPage';
-
 import Logo from '../components/Logo';
-
 import main from '../assets/images/main.svg';
 
 const Landing: React.FC = () => {

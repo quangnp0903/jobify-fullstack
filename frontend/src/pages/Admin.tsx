@@ -1,9 +1,9 @@
 import { FaSuitcaseRolling, FaCalendarCheck } from 'react-icons/fa';
+import styled from 'styled-components';
 import { useQuery, type QueryClient } from '@tanstack/react-query';
 
 import customFetch from '../utils/customFetch';
 import type { ApiError } from '../models/Error';
-import styled from 'styled-components';
 import { StatItem } from '../components';
 
 type AdminLoaderData = {

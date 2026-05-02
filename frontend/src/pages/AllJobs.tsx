@@ -12,6 +12,7 @@ import {
   useQuery,
   type QueryClient,
 } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 import { JobsContainer, SearchContainer } from '../components';
 import type { SearchJobData, JobsData } from '../models/Job';
@@ -19,7 +20,6 @@ import type { SearchJobData, JobsData } from '../models/Job';
 import customFetch from '../utils/customFetch';
 import Modal from '../components/Modal';
 import DeleteConfirmation from '../components/DeleteConfirmation';
-import { toast } from 'react-toastify';
 
 type AllJobsLoaderData = {
   searchValues: SearchJobData;

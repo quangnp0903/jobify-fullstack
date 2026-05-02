@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FaUserCircle, FaCaretDown } from 'react-icons/fa';
 import styled from 'styled-components';
+
 import { useDashboardContext } from '../pages/DashboardLayout';
 
 const LogoutContainer: React.FC = () => {

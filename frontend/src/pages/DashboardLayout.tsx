@@ -9,13 +9,13 @@ import {
 import { Outlet, redirect, useNavigate, useNavigation } from 'react-router-dom';
 import styled from 'styled-components';
 import { QueryClient, useQuery } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
 
 import { BigSidebar, SmallSidebar, Navbar } from '../components';
 import { checkDefaultTheme } from '../App';
 import type { User } from '../models/User';
 import customFetch from '../utils/customFetch';
 import Loading from '../components/Loading';
-import type { AxiosError } from 'axios';
 
 type DashboardCtxObj = {
   user: User;
@@ -122,14 +122,7 @@ const DashboardLayout: React.FC<{ queryClient: QueryClient }> = ({
       toggleSidebar,
       logoutUser,
     }),
-    [
-      user,
-      showSidebar,
-      isDarkTheme,
-      toggleDarkTheme,
-      toggleSidebar,
-      logoutUser,
-    ]
+    [user, showSidebar, isDarkTheme, toggleDarkTheme, toggleSidebar, logoutUser]
   );
 
   const outletContextValue = useMemo(() => ({ user }), [user]);
