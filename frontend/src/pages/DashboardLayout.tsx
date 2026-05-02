@@ -87,17 +87,22 @@ const DashboardLayout: React.FC<{ queryClient: QueryClient }> = ({
     // toast.success('Logging out...');
   }, [navigate, queryClient]);
 
-  customFetch.interceptors.response.use(
-    (response) => {
-      return response;
-    },
-    (error) => {
-      if (error?.response?.status === 401) {
-        setIsAuthError(true);
+  useEffect(() => {
+    const interceptorId = customFetch.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error?.response?.status === 401) {
+          setIsAuthError(true);
+        }
+
+        return Promise.reject(error);
       }
-      return Promise.reject(error);
-    }
-  );
+    );
+
+    return () => {
+      customFetch.interceptors.response.eject(interceptorId);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isAuthError) return;

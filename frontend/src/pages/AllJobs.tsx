@@ -100,7 +100,13 @@ const AllJobs: React.FC<{ queryClient: QueryClient }> = ({ queryClient }) => {
   return (
     <>
       {jobToDelete && (
-        <Modal onClose={closeModalHandler}>
+        <Modal
+          onClose={() => {
+            if (!deleteMutation.isPending) {
+              closeModalHandler();
+            }
+          }}
+        >
           <DeleteConfirmation
             onCancel={closeModalHandler}
             onConfirm={() => deleteMutation.mutate(jobToDelete)}

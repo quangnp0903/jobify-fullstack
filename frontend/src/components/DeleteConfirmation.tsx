@@ -26,7 +26,11 @@ const DeleteConfirmation: React.FC<{
       {errorMessage && <p className="error">{errorMessage}</p>}
 
       <div className="confirmation-actions">
-        <button className="btn btn-secondary" onClick={onCancel}>
+        <button
+          className="btn btn-secondary"
+          onClick={onCancel}
+          disabled={isLoading}
+        >
           No
         </button>
         <button

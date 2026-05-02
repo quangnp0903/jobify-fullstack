@@ -43,7 +43,7 @@ const queryClient = new QueryClient({
 export const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem('darkTheme') === 'true';
 
-  // document.body.classList.toggle('dark-theme', isDarkTheme);
+  document.body.classList.toggle('dark-theme', isDarkTheme);
   return isDarkTheme;
 };
 
@@ -116,7 +116,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-      <ReactQueryDevtools initialIsOpen={false} />
+      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 }
