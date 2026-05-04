@@ -2,6 +2,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
+import FullscreenLoader from './components/FullscreenLoader';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -21,6 +23,7 @@ export const checkDefaultTheme = () => {
 const router = createBrowserRouter([
   {
     path: '/',
+    hydrateFallbackElement: <FullscreenLoader />,
     lazy: async () => {
       const [{ default: HomeLayout }, { default: Error }] = await Promise.all([
         import('./pages/HomeLayout'),
@@ -43,7 +46,8 @@ const router = createBrowserRouter([
       {
         path: 'register',
         lazy: async () => {
-          const { default: Register, action } = await import('./pages/Register');
+          const { default: Register, action } =
+            await import('./pages/Register');
           return {
             Component: Register,
             action,
@@ -63,9 +67,8 @@ const router = createBrowserRouter([
       {
         path: 'dashboard',
         lazy: async () => {
-          const { default: DashboardLayout, loader } = await import(
-            './pages/DashboardLayout'
-          );
+          const { default: DashboardLayout, loader } =
+            await import('./pages/DashboardLayout');
 
           return {
             Component: () => <DashboardLayout queryClient={queryClient} />,
@@ -76,9 +79,8 @@ const router = createBrowserRouter([
           {
             index: true,
             lazy: async () => {
-              const { default: AddJob, action } = await import(
-                './pages/AddJob'
-              );
+              const { default: AddJob, action } =
+                await import('./pages/AddJob');
 
               return {
                 Component: AddJob,
@@ -89,9 +91,11 @@ const router = createBrowserRouter([
           {
             path: 'edit-job/:jobId',
             lazy: async () => {
-              const { default: EditJob, loader, action } = await import(
-                './pages/EditJob'
-              );
+              const {
+                default: EditJob,
+                loader,
+                action,
+              } = await import('./pages/EditJob');
 
               return {
                 Component: EditJob,
@@ -135,9 +139,8 @@ const router = createBrowserRouter([
           {
             path: 'profile',
             lazy: async () => {
-              const { default: Profile, action } = await import(
-                './pages/Profile'
-              );
+              const { default: Profile, action } =
+                await import('./pages/Profile');
 
               return {
                 Component: Profile,
